@@ -1,0 +1,4 @@
+bin_x64/
+.vscode/
+downloaded_resources/
+build/
