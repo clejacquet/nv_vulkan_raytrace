@@ -26,6 +26,7 @@
  */
 
 #include <sstream>
+#include <iostream>
 #include <vulkan/vulkan.hpp>
 
 extern std::vector<std::string> defaultSearchPaths;
@@ -197,7 +198,6 @@ void HelloVulkan::updateDescriptorSet()
   writes.emplace_back(m_descSetLayoutBind.makeWriteArray(m_descSet, 3, diit.data()));
 
   // Skybox texture
-
   writes.emplace_back(m_descSetLayoutBind.makeWriteArray(m_descSet, 7, &m_skybox_txt->descriptor)) ;
 
   // Writing the information
@@ -282,6 +282,11 @@ void HelloVulkan::loadModel(const std::string& filename, nvmath::mat4f transform
                                | vkBU::eAccelerationStructureBuildInputReadOnlyKHR);
   model.matColorBuffer = m_alloc.createBuffer(cmdBuf, loader.m_materials, vkBU::eStorageBuffer);
   model.matIndexBuffer = m_alloc.createBuffer(cmdBuf, loader.m_matIndx, vkBU::eStorageBuffer);
+
+  for (auto& texture : loader.m_textures) {
+    std::cout << texture << std::endl;
+  }
+  
   // Creates all textures found
   createTextureImages(cmdBuf, loader.m_textures);
   cmdBufGet.submitAndWait(cmdBuf);
@@ -461,7 +466,7 @@ void HelloVulkan::createSkyboxTexture()
   }
 
   vk::DeviceSize buffer_size = static_cast<uint64_t>(total_size);
-  auto img_size = vk::Extent2D { face_width, face_height };
+  auto img_size = vk::Extent2D { static_cast<uint32_t>(face_width), static_cast<uint32_t>(face_height) };
   auto img_create_info = nvvk::makeImageCubeCreateInfo(img_size, cubemap_format, vkIU::eSampled, true);
 
   {

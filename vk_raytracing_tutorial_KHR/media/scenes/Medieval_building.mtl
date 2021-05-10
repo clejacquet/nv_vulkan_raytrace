@@ -16,6 +16,7 @@ Kd 0.588000 0.588000 0.588000
 Ks 0.450000 0.450000 0.450000
 Ns 32.000000
 map_Kd RooftilesWood0005_2_S.jpg
+map_Ks RooftilesWood0005_2_Sspec.jpg
 
 newmtl _material_535-effect
 illum 2
@@ -386,6 +387,7 @@ Kd 0.588000 0.588000 0.588000
 Ks 0.450000 0.450000 0.450000
 Ns 32.000000
 map_Kd RooftilesWood0005_2_S.jpg
+map_Ks RooftilesWood0005_2_Sspec.jpg
 
 newmtl _Material #265
 illum 0
@@ -401,6 +403,7 @@ Kd 0.588000 0.588000 0.588000
 Ks 0.450000 0.450000 0.450000
 Ns 32.000000
 map_Kd RooftilesWood0005_2_S.jpg
+map_Ks RooftilesWood0005_2_Sspec.jpg
 
 newmtl _Material #275
 illum 0
@@ -491,6 +494,7 @@ Kd 0.588000 0.588000 0.588000
 Ks 0.450000 0.450000 0.450000
 Ns 32.000000
 map_Kd RooftilesWood0005_2_S.jpg
+map_Ks RooftilesWood0005_2_Sspec.jpg
 
 newmtl _Material #335
 illum 0
@@ -521,6 +525,7 @@ Kd 0.588000 0.588000 0.588000
 Ks 0.450000 0.450000 0.450000
 Ns 32.000000
 map_Kd RooftilesWood0005_2_S.jpg
+map_Ks RooftilesWood0005_2_Sspec.jpg
 
 newmtl _Material #355
 illum 0

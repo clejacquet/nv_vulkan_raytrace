@@ -56,10 +56,15 @@ void ObjLoader::loadModel(const std::string& filename)
     m.ior           = material.ior;
     m.shininess     = material.shininess;
     m.illum         = material.illum;
-    if(!material.diffuse_texname.empty())
-    {
+    
+    if (!material.diffuse_texname.empty()) {
       m_textures.push_back(material.diffuse_texname);
       m.textureID = static_cast<int>(m_textures.size()) - 1;
+    }
+
+    if (!material.specular_texname.empty()) {
+      m_textures.push_back(material.specular_texname);
+      m.textureIDspec = static_cast<int>(m_textures.size()) - 1;
     }
 
     m_materials.emplace_back(m);

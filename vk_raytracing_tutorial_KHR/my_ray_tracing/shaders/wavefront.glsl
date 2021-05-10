@@ -18,6 +18,7 @@ struct WaveFrontMaterial
   float dissolve;  // 1 == opaque; 0 == fully transparent
   int   illum;     // illumination model (see http://www.fileformat.info/format/material/)
   int   textureId;
+  int   textureIdSpec;
 };
 
 struct sceneDesc

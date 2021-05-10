@@ -132,6 +132,12 @@ void main()
         } else {
             // Specular
             specular = computeSpecular(mat, gl_WorldRayDirectionEXT, L, normal) * vec3(0.9, 0.85, 0.3);
+
+            if (mat.textureIdSpec != -1) {
+                uint txtId = mat.textureIdSpec + scnDesc.i[gl_InstanceCustomIndexEXT].txtOffset;
+                vec2 texCoord = v0.texCoord * barycentrics.x + v1.texCoord * barycentrics.y + v2.texCoord * barycentrics.z;
+                specular *= texture(textureSamplers[nonuniformEXT(txtId)], texCoord).xyz;
+            }
             // specular = vec3(0);
         }
     }
