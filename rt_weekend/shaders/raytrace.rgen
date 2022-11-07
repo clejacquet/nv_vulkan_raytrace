@@ -1,0 +1,87 @@
+#version 460
+#extension GL_EXT_ray_tracing : require
+#extension GL_GOOGLE_include_directive : enable
+#include "raycommon.glsl"
+#include "random.glsl"
+
+const int SAMPLES_COUNT = 8;
+
+layout(binding = 0, set = 0) uniform accelerationStructureEXT topLevelAS;
+layout(binding = 1, set = 0, rgba32f) uniform image2D image;
+
+layout(location = 0) rayPayloadEXT hitPayload prd;
+
+layout(binding = 0, set = 1) uniform CameraProperties
+{
+	mat4 view;
+	mat4 proj;
+	mat4 viewInverse;
+	mat4 projInverse;
+}
+cam;
+
+layout(push_constant) uniform Constants
+{
+    vec4  clearColor;
+    vec3  lightPosition;
+    float lightIntensity;
+    int   lightType;
+    int   frame;
+}
+pushC;
+
+void main()
+{
+    uint seed = tea(gl_LaunchIDEXT.y * gl_LaunchSizeEXT.x + gl_LaunchIDEXT.x, pushC.frame);
+
+    vec3 color_acc = vec3(0);
+
+    for (int smpl = 0; smpl < SAMPLES_COUNT; ++smpl) {
+        float rx = rnd(seed);
+        float ry = rnd(seed);
+
+        vec2 pixel_jitter = (pushC.frame <= 0 && smpl == 0) ? vec2(0.5) : vec2(rx, ry);
+
+        const vec2 pixelCenter = vec2(gl_LaunchIDEXT.xy) + pixel_jitter;
+        const vec2 inUV        = pixelCenter / vec2(gl_LaunchSizeEXT.xy);
+        vec2       d           = inUV * 2.0 - 1.0;
+
+        vec4 origin    = cam.viewInverse * vec4(0, 0, 0, 1);
+        vec4 target    = cam.projInverse * vec4(d.x, d.y, 1, 1);
+        vec4 direction = cam.viewInverse * vec4(normalize(target.xyz), 0);
+
+        uint  rayFlags = gl_RayFlagsOpaqueEXT;
+        float tMin     = 0.001;
+        float tMax     = 10000.0;
+
+        prd.depth = 0;
+
+        traceRayEXT(topLevelAS,     // acceleration structure
+                    rayFlags,       // rayFlags
+                    0xFF,           // cullMask
+                    0,              // sbtRecordOffset
+                    0,              // sbtRecordStride
+                    0,              // missIndex
+                    origin.xyz,     // ray origin
+                    tMin,           // ray min range
+                    direction.xyz,  // ray direction
+                    tMax,           // ray max range
+                    0               // payload (location = 0)
+        );
+
+        color_acc += prd.hitValue;
+    }
+
+    color_acc /= float(SAMPLES_COUNT);
+
+    vec3 final_color;
+    if (pushC.frame <= 0) {
+        final_color = color_acc;
+    } else {
+        float hit_factor = 1.0 / float(pushC.frame + 1);
+        vec3 current_color = imageLoad(image, ivec2(gl_LaunchIDEXT.xy)).rgb;
+        final_color = mix(current_color, color_acc, hit_factor);
+    }
+
+	imageStore(image, ivec2(gl_LaunchIDEXT.xy), vec4(final_color, 1.0));
+}
