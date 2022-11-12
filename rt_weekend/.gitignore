@@ -2,4 +2,4 @@ bin_x64/
 .vscode/
 downloaded_resources/
 build/
-log_nvprosample.txt
+spv/

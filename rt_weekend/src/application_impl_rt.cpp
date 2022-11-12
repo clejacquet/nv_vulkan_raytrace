@@ -278,7 +278,7 @@ void Application::Impl::createRtPipeline()
     rayPipelineInfo.setMaxPipelineRayRecursionDepth(16);  // Ray depth
     rayPipelineInfo.setLayout(m_rtPipelineLayout);
     m_rtPipeline = static_cast<const vk::Pipeline&>(
-        m_device.createRayTracingPipelineKHR({}, {}, rayPipelineInfo));
+        m_device.createRayTracingPipelineKHR({}, {}, rayPipelineInfo).value);
 
     m_device.destroy(raygenSM);
     m_device.destroy(missSM);
